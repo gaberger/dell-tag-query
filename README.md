@@ -15,7 +15,7 @@ Java JVM .= 1.8
 
 ## Install from NPM
 
-sudo npm install dell-tag-query -g
+sudo npm install dell-tag-query-<version>-standalone -g
 
 
 Example output
