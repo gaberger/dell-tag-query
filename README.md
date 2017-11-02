@@ -10,7 +10,7 @@ Java JVM .= 1.8
 
 ## Usage
 
-java -jar dell-tag-query.jar <service-tag>
+```java -jar dell-tag-query.jar <service-tag>```
 
 
 ## Install from NPM
