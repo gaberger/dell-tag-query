@@ -7,6 +7,5 @@
                  [http-kit "2.2.0"]
                  [dk.ative/docjure "1.11.0"]
                  [cheshire "5.8.0"]
-                 [hickory "0.7.1"]
-                 [com.rpl/specter "1.0.4"]]
+                 [hickory "0.7.1"]]
   :main dell-tag-query.core)

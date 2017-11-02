@@ -4,8 +4,8 @@
             [hickory.core :refer [parse as-hickory as-hiccup]]
             [hickory.select :as s]
             [cheshire.core :refer :all]
-            [com.rpl.specter :refer :all]
-            [clojure.string :as str]))
+            [clojure.string :as str])
+  (:gen-class))
 
 
 
@@ -33,18 +33,14 @@
 (defn get-parts [m]
   (-> (s/select (s/and (s/id "hdnParts") ) m) first :attrs :value))
 
-(defn parse-hickory->csv [service-tag body]
-  (try
+(defn parse-hickory->csv [body]
     (let [hickory (html->hickory body)
           summary (get-summary hickory)
-          _ (pprint/pprint summary)
           hickory-data (if (not (isError? hickory))
                          (get-parts hickory)
-                         (throw (Exception.)))
+                         (throw (Exception. "Asset not found")))
           json->edn (parse-string hickory-data true)]
-      json->edn)))
-    ;#_(catch Exception e
-    ;       (print (str "Exception: Asset " service-tag " doesn't exist")))))
+      json->edn))
 
 (defn get-configuration [service-tag]
   (let [url (str "http://www.dell.com/support/home/us/en/19/product-support/servicetag/" service-tag "/configuration")
@@ -53,14 +49,17 @@
         body (:body @response)]
    (condp = status
        200 body
-       (print (str "Unexpected return: " (:status @response))))))
+       (throw (Exception. (str (:status @response)))))))
 
 
 (defn -main [service-tag]
- (let [config (get-configuration (str service-tag))
-       output (parse-hickory->csv service-tag config)]
+  (try
+    (let [config (get-configuration (str service-tag))
+          output (parse-hickory->csv config)]
+      (print-summary config)
+      (print-parts output))
 
-  (print-summary config)
-  (print-parts output)))
+    (catch Exception e
+      (print (str "Exception: Asset " service-tag " " e)))))
 
 
