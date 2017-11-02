@@ -10,12 +10,17 @@ Java JVM .= 1.8
 
 ## Usage
 
+### Using Java
+
 ```java -jar dell-tag-query.jar <service-tag>```
 
+## Using NPM Package
 
-## Install from NPM
+### Install from NPM
 
 sudo npm install dell-tag-query-<version>-standalone -g
+
+```dell-tag-query <service-tag>```
 
 
 Example output
