@@ -8,5 +8,5 @@
                  [dk.ative/docjure "1.11.0"]
                  [cheshire "5.8.0"]
                  [hickory "0.7.1"]
-                 [table "0.5.0"]]
+                 [com.rpl/specter "1.0.4"]]
   :main dell-tag-query.core)

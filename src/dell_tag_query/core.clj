@@ -3,40 +3,48 @@
             [clojure.pprint :as pprint]
             [hickory.core :refer [parse as-hickory as-hiccup]]
             [hickory.select :as s]
-            [cheshire.core :refer :all]))
+            [cheshire.core :refer :all]
+            [com.rpl.specter :refer :all]
+            [clojure.string :as str]))
 
-;
-;(defn find-sku [sku]
-;  (-> (s/select (s/child (s/class "sku0"))))
-;  nil)
 
-(defn get-parts [m]
-  (pprint/print-table (map #(select-keys (first (:Parts %)) [:Qty :Description :PartNumber]) m)))
 
+(defn get-summary [m]
+  (let [f (-> (s/select
+                (s/and (s/class "rt-responsive-table-0")
+                       (s/node-type :element)) m) first :content next first :content next first :content)
+        summary-head (map (-> str/trim ) (remove nil? (map #(-> % :content next first :content first) f)))
+        summary-tail (mapv str/trim (remove nil? (map #(-> % :content next next next first :content first) f)))
+        summary (zipmap summary-head summary-tail)]
+    summary))
+
+(defn html->hickory [content]
+  (-> content parse as-hickory))
+
+(defn print-summary [m]
+  (pprint/print-table [(get-summary (html->hickory m))]))
+
+(defn print-parts [m]
+ (pprint/print-table (map #(select-keys (first (:Parts %)) [:Qty :Description :PartNumber]) m)))
 
 (defn isError? [h]
   (not (nil? (-> (s/select (s/and (s/id "mse_entryErrorMessage")) h) first :content first))))
-
-(defn get-summary [m]
-  (-> (s/select (s/and (s/class "rt-responsive-table-0")) m)))
 
 (defn get-parts [m]
   (-> (s/select (s/and (s/id "hdnParts") ) m) first :attrs :value))
 
 (defn parse-hickory->csv [service-tag body]
   (try
-    (let [hickory (-> body parse as-hickory)
-          _ (pprint/pprint get-summary hickory)
+    (let [hickory (html->hickory body)
+          summary (get-summary hickory)
+          _ (pprint/pprint summary)
           hickory-data (if (not (isError? hickory))
                          (get-parts hickory)
                          (throw (Exception.)))
-          _ (print hickory-data)
           json->edn (parse-string hickory-data true)]
-      json->edn)
-    (catch Exception e
-           (print (str "Exception: Asset " service-tag " doesn't exist")))))
-
-
+      json->edn)))
+    ;#_(catch Exception e
+    ;       (print (str "Exception: Asset " service-tag " doesn't exist")))))
 
 (defn get-configuration [service-tag]
   (let [url (str "http://www.dell.com/support/home/us/en/19/product-support/servicetag/" service-tag "/configuration")
@@ -48,10 +56,11 @@
        (print (str "Unexpected return: " (:status @response))))))
 
 
-
 (defn -main [service-tag]
  (let [config (get-configuration (str service-tag))
-       parse (parse-hickory->csv service-tag config)]))
+       output (parse-hickory->csv service-tag config)]
 
+  (print-summary config)
+  (print-parts output)))
 
 
