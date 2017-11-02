@@ -52,14 +52,15 @@
        (throw (Exception. (str (:status @response)))))))
 
 
-(defn -main [service-tag]
-  (try
-    (let [config (get-configuration (str service-tag))
-          output (parse-hickory->csv config)]
-      (print-summary config)
-      (print-parts output))
-
-    (catch Exception e
-      (print (str "Exception: Asset " service-tag " " e)))))
+(defn -main [& args]
+  (if (not (empty? args))
+    (try
+      (let [config (get-configuration (str (first args)))
+            output (parse-hickory->csv config)]
+        (print-summary config)
+        (print-parts output))
+      (catch Exception e
+        (print (str "Exception: Asset " (first args) " " e))))
+   (print "Please provide a service tag\n")))
 
 

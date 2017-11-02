@@ -2,10 +2,20 @@
 
 A Clojure Application to query the Dell Service Catalog with a service tag and return the system catalog information
 
+
+## Requirements
+
+Java JVM .= 1.8
+
+
 ## Usage
 
 java -jar dell-tag-query.jar <service-tag>
 
+
+## Install from NPM
+
+sudo npm install dell-tag-query -g
 
 
 Example output

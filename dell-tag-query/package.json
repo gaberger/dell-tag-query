@@ -1,0 +1,25 @@
+{
+  "bin": {
+    "dell-tag-query": "jdeploy-bundle/jdeploy.js"
+  },
+  "author": "",
+  "description": "",
+  "main": "index.js",
+  "preferGlobal": "true",
+  "repository": "",
+  "version": "1.0.1",
+  "jdeploy": {
+    "jar": "dell-tag-query-0.1.0-standalone.jar"
+  },
+  "dependencies": {
+    "shelljs": "^0.7.5"
+  },
+  "license": "ISC",
+  "name": "dell-tag-query",
+  "files": [
+    "jdeploy-bundle"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
