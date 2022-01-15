@@ -12,7 +12,7 @@
     "jar": "dell-tag-query-0.1.0-standalone.jar"
   },
   "dependencies": {
-    "shelljs": "^0.7.5"
+    "shelljs": "^0.8.5"
   },
   "license": "ISC",
   "name": "dell-tag-query",
